@@ -6,6 +6,8 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+
+	"github.com/andrean360/bridging-bpjs-go/helper"
 )
 
 func ResponseVclaim(encrypted string, key string) (string, error) {
@@ -36,9 +38,9 @@ func ResponseVclaim(encrypted string, key string) (string, error) {
 	mode.CryptBlocks(cipherText, cipherText)
 
 	// cipherText, _ = pkcs7.Unpad(cipherText, aes.BlockSize)
-	cipherText, _ = Unpad(cipherText, aes.BlockSize)
+	cipherText, _ = helper.Unpad(cipherText, aes.BlockSize)
 	// data, err := lzstring.DecompressFromEncodedUriComponent(string(cipherText))
-	data, err := DecompressFromEncodedUriComponent(string(cipherText))
+	data, err := helper.DecompressFromEncodedUriComponent(string(cipherText))
 	if err != nil {
 		return "", err
 	}
