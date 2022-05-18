@@ -91,7 +91,7 @@ func PostRequest(endpoint string, data interface{}) interface{} {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	fmt.Println(string(body))
 	var resp_mentah Respon_MentahDTO
 	var resp Respon_DTO
 	json.Unmarshal([]byte(body), &resp_mentah)
