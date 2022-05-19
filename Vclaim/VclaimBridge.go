@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/mashingan/smapping"
 )
 
 type Respon_MentahDTO struct {
@@ -25,9 +27,16 @@ type Respon_DTO struct {
 	Response interface{} `json:"response"`
 }
 
-func GetRequest(endpoint string) interface{} {
+func GetRequest(endpoint string, cfg interface{}) interface{} {
 
-	cons_id, User_key, tstamp, X_signature := SetHeader()
+	conf := ConfigBpjs{}
+
+	err := smapping.FillStruct(&conf, smapping.MapFields(&cfg))
+	if err != nil {
+		log.Fatalf("Failed map %v: ", err)
+	}
+
+	cons_id, Secret_key, User_key, tstamp, X_signature := SetHeader(conf)
 
 	req, _ := http.NewRequest("GET", endpoint, nil)
 
@@ -60,13 +69,20 @@ func GetRequest(endpoint string) interface{} {
 	return &resp
 }
 
-func PostRequest(endpoint string, data interface{}) interface{} {
+func PostRequest(endpoint string, cfg interface{}, data interface{}) interface{} {
 
-	cons_id, User_key, tstamp, X_signature := SetHeader()
+	conf := ConfigBpjs{}
+
+	err := smapping.FillStruct(&conf, smapping.MapFields(&cfg))
+	if err != nil {
+		log.Fatalf("Failed map %v: ", err)
+	}
+
+	cons_id, Secret_key, User_key, tstamp, X_signature := SetHeader(conf)
 
 	var buf bytes.Buffer
 
-	err := json.NewEncoder(&buf).Encode(data)
+	err = json.NewEncoder(&buf).Encode(data)
 
 	if err != nil {
 		log.Fatal(err)
